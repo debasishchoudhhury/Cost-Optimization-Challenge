@@ -1,0 +1,22 @@
+{
+  "name": "CosmosBillingInput",
+  "properties": {
+    "linkedServiceName": {
+      "referenceName": "CosmosLinkedService",
+      "type": "LinkedServiceReference"
+    },
+    "type": "DocumentDbCollection",
+    "typeProperties": {
+      "collectionName": "billing-records",
+      "database": "billingdb"
+    },
+    "parameters": {
+      "startDate": {
+        "type": "String"
+      },
+      "endDate": {
+        "type": "String"
+      }
+    }
+  }
+}
