@@ -1,0 +1,34 @@
+trigger: none
+
+schedules:
+- cron: "0 1 1 * *"
+ displayName: "Monthly archival trigger"
+ branches:
+   include:
+     - main
+
+jobs:
+- job: ArchiveBillingData
+pool:
+ vmImage: 'ubuntu-latest'
+steps:
+- task: AzurePowerShell@5
+ inputs:
+   azureSubscription: 'your-service-connection'
+   ScriptType: 'InlineScript'
+   Inline: |
+     $startDate = (Get-Date).AddMonths(-4).ToString("yyyy-MM-01T00:00:00Z")
+     $endDate = (Get-Date).AddMonths(-3).ToString("yyyy-MM-01T00:00:00Z")
+
+     Write-Host "##vso[task.setvariable variable=startDate]$startDate"
+     Write-Host "##vso[task.setvariable variable=endDate]$endDate"
+- task: AzureDataFactoryV2@0
+ inputs:
+   azureSubscription: 'your-service-connection'
+   DataFactoryName: 'your-adf-name'
+   ResourceGroupName: 'your-rg'
+   PipelineName: 'ArchiveBillingRecords'
+   waitForCompletion: true
+   parameters: >
+     -startDate "$(startDate)"
+     -endDate "$(endDate)"

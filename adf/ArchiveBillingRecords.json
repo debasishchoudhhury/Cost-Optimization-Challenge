@@ -1,0 +1,50 @@
+{
+  "name": "ArchiveBillingRecords",
+  "properties": {
+    "description": "Archives Cosmos DB records older than 3 months to Blob Storage in Parquet format.",
+    "activities": [
+      {
+        "name": "CopyBillingRecords",
+        "type": "Copy",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "7.00:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false
+        },
+        "typeProperties": {
+          "source": {
+            "type": "CosmosDbSqlApiSource",
+            "sqlQuery": "SELECT * FROM c WHERE c.timestamp >= @startDate AND c.timestamp < @endDate"
+          },
+          "sink": {
+            "type": "ParquetSink"
+          },
+          "enableStaging": false
+        },
+        "inputs": [
+          {
+            "referenceName": "CosmosBillingInput",
+            "type": "DatasetReference"
+          }
+        ],
+        "outputs": [
+          {
+            "referenceName": "BlobParquetOutput",
+            "type": "DatasetReference"
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "startDate": {
+        "type": "String"
+      },
+      "endDate": {
+        "type": "String"
+      }
+    },
+    "annotations": []
+  }
+}

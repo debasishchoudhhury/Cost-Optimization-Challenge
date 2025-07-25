@@ -1,0 +1,18 @@
+{
+  "name": "BlobParquetOutput",
+  "properties": {
+    "linkedServiceName": {
+      "referenceName": "BlobStorageLinkedService",
+      "type": "LinkedServiceReference"
+    },
+    "type": "Parquet",
+    "typeProperties": {
+      "location": {
+        "type": "AzureBlobFSLocation",
+        "fileSystem": "billing-archive",
+        "folderPath": "@concat(formatDateTime(pipeline().parameters.startDate, 'yyyy/MM'), '/')",
+        "fileName": "batch-01.parquet"
+      }
+    }
+  }
+}
